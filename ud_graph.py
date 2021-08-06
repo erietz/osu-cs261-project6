@@ -1,7 +1,7 @@
-# Course: 
-# Author: 
-# Assignment: 
-# Description:
+# Course: CS261 Data Structures
+# Author: Ethan Rietz
+# Assignment: 6
+# Description: Contains a class which represents an undirected graph
 
 
 class UndirectedGraph:
@@ -44,70 +44,110 @@ class UndirectedGraph:
         """
         Add new vertex to the graph
         """
-        
+        if v in self.adj_list:
+            return
+        else:
+            self.adj_list[v] = []
+
+
     def add_edge(self, u: str, v: str) -> None:
         """
         Add edge to the graph
         """
-        
+        u_edges, v_edges = self.adj_list.get(u), self.adj_list.get(v)
+
+        # Edge already exists
+        if u_edges is not None and v_edges is not None and u in v_edges:
+            return
+
+        # u does not already exist
+        if u_edges is None:
+            self.add_vertex(u)
+
+        if v_edges is None:
+            self.add_vertex(v)
+
+        self.adj_list[u].append(v)
+        self.adj_list[v].append(u)
+
 
     def remove_edge(self, v: str, u: str) -> None:
         """
         Remove edge from the graph
         """
-        
+        u_edges, v_edges = self.adj_list.get(u), self.adj_list.get(v)
+
+        if u_edges is None or v_edges is None:
+            return
+
+        if u not in v_edges:
+            return
+
+        self.adj_list[u].remove(v)
+        self.adj_list[v].remove(u)
+
 
     def remove_vertex(self, v: str) -> None:
         """
         Remove vertex and all connected edges
         """
-        
+        edges = self.adj_list.get(v)
+
+        if edges is None:
+            return
+        else:
+            for vertex in edges:
+                edge = self.adj_list.get(vertex)
+                edge.remove(v)
+
+            self.adj_list.pop(v)
+
 
     def get_vertices(self) -> []:
         """
         Return list of vertices in the graph (any order)
         """
-       
+
 
     def get_edges(self) -> []:
         """
         Return list of edges in the graph (any order)
         """
-        
+
 
     def is_valid_path(self, path: []) -> bool:
         """
         Return true if provided path is valid, False otherwise
         """
-       
+
 
     def dfs(self, v_start, v_end=None) -> []:
         """
         Return list of vertices visited during DFS search
         Vertices are picked in alphabetical order
         """
-       
+
 
     def bfs(self, v_start, v_end=None) -> []:
         """
         Return list of vertices visited during BFS search
         Vertices are picked in alphabetical order
         """
-        
+
 
     def count_connected_components(self):
         """
         Return number of connected componets in the graph
         """
-      
+
 
     def has_cycle(self):
         """
         Return True if graph contains a cycle, False otherwise
         """
-       
 
-   
+
+
 
 
 if __name__ == '__main__':
