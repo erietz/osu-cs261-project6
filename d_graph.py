@@ -99,13 +99,23 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        pass
+        return list(range(len(self.adj_matrix)))
 
     def get_edges(self) -> []:
         """
         TODO: Write this implementation
         """
-        pass
+        edges = []
+        size_matrix = len(self.adj_matrix)
+
+        for i in range(size_matrix):
+            for j in range(size_matrix):
+                if i != j:
+                    weight = self.adj_matrix[i][j]
+                    if weight != 0:
+                        edges.append((i, j, weight))
+
+        return edges
 
     def is_valid_path(self, path: []) -> bool:
         """
