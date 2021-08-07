@@ -115,7 +115,7 @@ class UndirectedGraph:
         """
         Return list of edges in the graph (any order)
         """
-        all_edges = set()
+        all_edges = set()   # is item in set is O(1) (on average) operation
 
         for u, edge_list in self.adj_list.items():
             for v in edge_list:
@@ -129,7 +129,14 @@ class UndirectedGraph:
         """
         Return true if provided path is valid, False otherwise
         """
-
+        length_path = len(path)
+        for i in range(length_path - 1):
+            vertex = path[i]
+            edges = self.adj_list[vertex]
+            next_vertex = path[i+1]
+            if next_vertex not in edges:
+                return False
+        return True
 
     def dfs(self, v_start, v_end=None) -> []:
         """
