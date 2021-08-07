@@ -3,6 +3,7 @@
 # Assignment: 6
 # Description: Contains a class which represents an undirected graph
 
+from collections import deque
 
 class UndirectedGraph:
     """
@@ -100,19 +101,28 @@ class UndirectedGraph:
                 edge = self.adj_list.get(vertex)
                 edge.remove(v)
 
-            self.adj_list.pop(v)
+            del self.adj_list[v]
 
 
     def get_vertices(self) -> []:
         """
         Return list of vertices in the graph (any order)
         """
+        return list(self.adj_list.keys())
 
 
     def get_edges(self) -> []:
         """
         Return list of edges in the graph (any order)
         """
+        all_edges = set()
+
+        for u, edge_list in self.adj_list.items():
+            for v in edge_list:
+                if (v, u) not in all_edges:
+                    all_edges.add((u, v))
+
+        return list(all_edges)
 
 
     def is_valid_path(self, path: []) -> bool:
