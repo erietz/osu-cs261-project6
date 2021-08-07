@@ -134,6 +134,10 @@ class UndirectedGraph:
         Return true if provided path is valid, False otherwise
         """
         length_path = len(path)
+
+        if length_path == 1 and path[0] not in self.adj_list.keys():
+            return False
+
         for i in range(length_path - 1):
             vertex = path[i]
             edges = self.adj_list[vertex]
@@ -148,8 +152,11 @@ class UndirectedGraph:
         Return list of vertices visited during DFS search
         Vertices are picked in alphabetical order
         """
-        visited_verticies = set()
+        if v_start not in self.adj_list.keys():
+            return []
+
         traversal_path = []
+        visited_verticies = set()
         stack = deque()
 
         stack.append(v_start)
@@ -176,6 +183,9 @@ class UndirectedGraph:
         Return list of vertices visited during BFS search
         Vertices are picked in alphabetical order
         """
+        if v_start not in self.adj_list.keys():
+            return []
+
         visited_verticies = set()
         traversal_path = []
         queue = deque()
