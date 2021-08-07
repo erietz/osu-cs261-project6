@@ -149,7 +149,7 @@ class UndirectedGraph:
         stack = deque()
 
         stack.append(v_start)
-        while len(stack) != 0:
+        while stack:
             vertex = stack.pop()
 
             # Add surrounding verticies to stack for processing
@@ -174,11 +174,11 @@ class UndirectedGraph:
         """
         visited_verticies = set()
         traversal_path = []
-        stack = deque()
+        queue = deque()
 
-        stack.append(v_start)
-        while len(stack) != 0:
-            vertex = stack.popleft()
+        queue.append(v_start)
+        while queue:
+            vertex = queue.popleft()
 
             # Add surrounding verticies to stack for processing
             if vertex not in visited_verticies:
@@ -190,14 +190,14 @@ class UndirectedGraph:
                     return traversal_path
 
                 for successor in sorted(self.adj_list[vertex]):
-                    stack.append(successor)
+                    queue.append(successor)
 
         return traversal_path
 
 
     def count_connected_components(self):
         """
-        Return number of connected componets in the graph
+        Return number of connected components in the graph
         """
         connected_components = 0
         visited_verticies = set()
@@ -205,9 +205,9 @@ class UndirectedGraph:
         for vertex in self.adj_list.keys():
             if vertex not in visited_verticies:
                 connected_components += 1
-                verticies_in_compenent = set(self.dfs(vertex))
-                for i in verticies_in_compenent:
-                    visited_verticies.add(i)
+                verticies_in_compenent = self.dfs(vertex)
+                for other_vertex in verticies_in_compenent:
+                    visited_verticies.add(other_vertex)
 
         return connected_components
 
@@ -216,65 +216,96 @@ class UndirectedGraph:
         """
         Return True if graph contains a cycle, False otherwise
         """
+        verticies = list(self.adj_list.keys())
+        if len(verticies) < 3:
+            return False
 
+        queue = deque()
 
+        vertex_flags = dict()
+        for vertex in verticies:
+            vertex_flags[vertex] = -1
+
+        # TODO: this will break if there are three verticies and no edges
+        i = 0
+        vertex = verticies[i]
+        while len(self.adj_list[vertex]) == 0:
+            i += 1
+            vertex = verticies[i]
+
+        queue.append(vertex)
+
+        while queue:
+            vertex = queue.popleft()
+            vertex_flags[vertex] = 1
+
+            for successor in self.adj_list[vertex]:
+                successor_flag = vertex_flags[successor]
+
+                if successor_flag == 0:
+                    return True
+                if successor_flag == -1:
+                    queue.append(successor)
+                    vertex_flags[successor] = 0
+
+        return False
 
 if __name__ == '__main__':
 
-    # # method add_vertex() / add_edge example 1 {{{
-    # print("\nPDF - method add_vertex() / add_edge example 1")
-    # print("----------------------------------------------")
-    # g = UndirectedGraph()
-    # print(g)
+    # method add_vertex() / add_edge example 1 {{{
+    print("\nPDF - method add_vertex() / add_edge example 1")
+    print("----------------------------------------------")
+    g = UndirectedGraph()
+    print(g)
 
-    # for v in 'ABCDE':
-    #     g.add_vertex(v)
-    # print(g)
+    for v in 'ABCDE':
+        g.add_vertex(v)
+    print(g)
 
-    # g.add_vertex('A')
-    # print(g)
+    g.add_vertex('A')
+    print(g)
 
-    # for u, v in ['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE', ('B', 'C')]:
-    #     g.add_edge(u, v)
-    # print(g)
-
-
-    # # }}}
-
-    # # method remove_edge() / remove_vertex example 1 {{{
-    # print("\nPDF - method remove_edge() / remove_vertex example 1")
-    # print("----------------------------------------------------")
-    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
-    # g.remove_vertex('DOES NOT EXIST')
-    # g.remove_edge('A', 'B')
-    # g.remove_edge('X', 'B')
-    # print(g)
-    # g.remove_vertex('D')
-    # print(g)
-
-    # # }}}
-
-    # # method get_vertices() / get_edges() example 1 {{{
-    # print("\nPDF - method get_vertices() / get_edges() example 1")
-    # print("---------------------------------------------------")
-    # g = UndirectedGraph()
-    # print(g.get_edges(), g.get_vertices(), sep='\n')
-    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE'])
-    # print(g.get_edges(), g.get_vertices(), sep='\n')
+    for u, v in ['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE', ('B', 'C')]:
+        g.add_edge(u, v)
+    print(g)
 
 
-    # # }}}
+    # }}}
 
-    # # method is_valid_path() example 1 {{{
-    # print("\nPDF - method is_valid_path() example 1")
-    # print("--------------------------------------")
-    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
-    # test_cases = ['ABC', 'ADE', 'ECABDCBE', 'ACDECB', '', 'D', 'Z']
-    # for path in test_cases:
-    #     print(list(path), g.is_valid_path(list(path)))
+    # method remove_edge() / remove_vertex example 1 {{{
+    print("\nPDF - method remove_edge() / remove_vertex example 1")
+    print("----------------------------------------------------")
+    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
+    g.remove_vertex('DOES NOT EXIST')
+    g.remove_edge('A', 'B')
+    g.remove_edge('X', 'B')
+    print(g)
+    g.remove_vertex('D')
+    print(g)
+
+    # }}}
+
+    # method get_vertices() / get_edges() example 1 {{{
+    print("\nPDF - method get_vertices() / get_edges() example 1")
+    print("---------------------------------------------------")
+    g = UndirectedGraph()
+    print(g.get_edges(), g.get_vertices(), sep='\n')
+    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE'])
+    print(g.get_edges(), g.get_vertices(), sep='\n')
 
 
-    # # }}}
+    # }}}
+
+    # method is_valid_path() example 1 {{{
+    print("\nPDF - method is_valid_path() example 1")
+    print("--------------------------------------")
+    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
+    test_cases = ['ABC', 'ADE', 'ECABDCBE', 'ACDECB', '', 'D', 'Z']
+    for path in test_cases:
+        print(list(path), g.is_valid_path(list(path)))
+
+
+    # }}}
 
     # method dfs() and bfs() example 1 {{{
     print("\nPDF - method dfs() and bfs() example 1")
