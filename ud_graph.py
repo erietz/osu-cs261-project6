@@ -199,14 +199,23 @@ class UndirectedGraph:
         """
         Return number of connected componets in the graph
         """
+        connected_components = 0
+        visited_verticies = set()
+
+        for vertex in self.adj_list.keys():
+            if vertex not in visited_verticies:
+                connected_components += 1
+                verticies_in_compenent = set(self.dfs(vertex))
+                for i in verticies_in_compenent:
+                    visited_verticies.add(i)
+
+        return connected_components
 
 
     def has_cycle(self):
         """
         Return True if graph contains a cycle, False otherwise
         """
-
-
 
 
 
