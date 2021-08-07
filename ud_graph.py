@@ -138,11 +138,33 @@ class UndirectedGraph:
                 return False
         return True
 
+
     def dfs(self, v_start, v_end=None) -> []:
         """
         Return list of vertices visited during DFS search
         Vertices are picked in alphabetical order
         """
+        visited_verticies = set()
+        traversal_path = []
+        stack = deque()
+
+        stack.append(v_start)
+        while len(stack) != 0:
+            vertex = stack.pop()
+
+            # Add surrounding verticies to stack for processing
+            if vertex not in visited_verticies:
+                visited_verticies.add(vertex)
+
+                # Process the vertex
+                traversal_path.append(vertex)
+                if vertex == v_end:
+                    return traversal_path
+
+                for successor in sorted(self.adj_list[vertex], reverse=True):
+                    stack.append(successor)
+
+        return traversal_path
 
 
     def bfs(self, v_start, v_end=None) -> []:
@@ -150,6 +172,27 @@ class UndirectedGraph:
         Return list of vertices visited during BFS search
         Vertices are picked in alphabetical order
         """
+        visited_verticies = set()
+        traversal_path = []
+        stack = deque()
+
+        stack.append(v_start)
+        while len(stack) != 0:
+            vertex = stack.popleft()
+
+            # Add surrounding verticies to stack for processing
+            if vertex not in visited_verticies:
+                visited_verticies.add(vertex)
+
+                # Process the vertex
+                traversal_path.append(vertex)
+                if vertex == v_end:
+                    return traversal_path
+
+                for successor in sorted(self.adj_list[vertex]):
+                    stack.append(successor)
+
+        return traversal_path
 
 
     def count_connected_components(self):
@@ -169,50 +212,62 @@ class UndirectedGraph:
 
 if __name__ == '__main__':
 
-    print("\nPDF - method add_vertex() / add_edge example 1")
-    print("----------------------------------------------")
-    g = UndirectedGraph()
-    print(g)
+    # # method add_vertex() / add_edge example 1 {{{
+    # print("\nPDF - method add_vertex() / add_edge example 1")
+    # print("----------------------------------------------")
+    # g = UndirectedGraph()
+    # print(g)
 
-    for v in 'ABCDE':
-        g.add_vertex(v)
-    print(g)
+    # for v in 'ABCDE':
+    #     g.add_vertex(v)
+    # print(g)
 
-    g.add_vertex('A')
-    print(g)
+    # g.add_vertex('A')
+    # print(g)
 
-    for u, v in ['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE', ('B', 'C')]:
-        g.add_edge(u, v)
-    print(g)
-
-
-    print("\nPDF - method remove_edge() / remove_vertex example 1")
-    print("----------------------------------------------------")
-    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
-    g.remove_vertex('DOES NOT EXIST')
-    g.remove_edge('A', 'B')
-    g.remove_edge('X', 'B')
-    print(g)
-    g.remove_vertex('D')
-    print(g)
+    # for u, v in ['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE', ('B', 'C')]:
+    #     g.add_edge(u, v)
+    # print(g)
 
 
-    print("\nPDF - method get_vertices() / get_edges() example 1")
-    print("---------------------------------------------------")
-    g = UndirectedGraph()
-    print(g.get_edges(), g.get_vertices(), sep='\n')
-    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE'])
-    print(g.get_edges(), g.get_vertices(), sep='\n')
+    # # }}}
+
+    # # method remove_edge() / remove_vertex example 1 {{{
+    # print("\nPDF - method remove_edge() / remove_vertex example 1")
+    # print("----------------------------------------------------")
+    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
+    # g.remove_vertex('DOES NOT EXIST')
+    # g.remove_edge('A', 'B')
+    # g.remove_edge('X', 'B')
+    # print(g)
+    # g.remove_vertex('D')
+    # print(g)
+
+    # # }}}
+
+    # # method get_vertices() / get_edges() example 1 {{{
+    # print("\nPDF - method get_vertices() / get_edges() example 1")
+    # print("---------------------------------------------------")
+    # g = UndirectedGraph()
+    # print(g.get_edges(), g.get_vertices(), sep='\n')
+    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE'])
+    # print(g.get_edges(), g.get_vertices(), sep='\n')
 
 
-    print("\nPDF - method is_valid_path() example 1")
-    print("--------------------------------------")
-    g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
-    test_cases = ['ABC', 'ADE', 'ECABDCBE', 'ACDECB', '', 'D', 'Z']
-    for path in test_cases:
-        print(list(path), g.is_valid_path(list(path)))
+    # # }}}
+
+    # # method is_valid_path() example 1 {{{
+    # print("\nPDF - method is_valid_path() example 1")
+    # print("--------------------------------------")
+    # g = UndirectedGraph(['AB', 'AC', 'BC', 'BD', 'CD', 'CE', 'DE'])
+    # test_cases = ['ABC', 'ADE', 'ECABDCBE', 'ACDECB', '', 'D', 'Z']
+    # for path in test_cases:
+    #     print(list(path), g.is_valid_path(list(path)))
 
 
+    # # }}}
+
+    # method dfs() and bfs() example 1 {{{
     print("\nPDF - method dfs() and bfs() example 1")
     print("--------------------------------------")
     edges = ['AE', 'AC', 'BE', 'CE', 'CD', 'CB', 'BD', 'ED', 'BH', 'QG', 'FG']
@@ -225,7 +280,9 @@ if __name__ == '__main__':
         v1, v2 = test_cases[i], test_cases[-1 - i]
         print(f'{v1}-{v2} DFS:{g.dfs(v1, v2)} BFS:{g.bfs(v1, v2)}')
 
+    # }}}
 
+    # method count_connected_components() example 1 {{{
     print("\nPDF - method count_connected_components() example 1")
     print("---------------------------------------------------")
     edges = ['AE', 'AC', 'BE', 'CE', 'CD', 'CB', 'BD', 'ED', 'BH', 'QG', 'FG']
@@ -242,7 +299,9 @@ if __name__ == '__main__':
         print(g.count_connected_components(), end=' ')
     print()
 
+    # }}}
 
+    # method has_cycle() example 1 {{{
     print("\nPDF - method has_cycle() example 1")
     print("----------------------------------")
     edges = ['AE', 'AC', 'BE', 'CE', 'CD', 'CB', 'BD', 'ED', 'BH', 'QG', 'FG']
@@ -258,3 +317,5 @@ if __name__ == '__main__':
         u, v = edge
         g.add_edge(u, v) if command == 'add' else g.remove_edge(u, v)
         print('{:<10}'.format(case), g.has_cycle())
+
+    # }}}
