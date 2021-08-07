@@ -55,6 +55,10 @@ class UndirectedGraph:
         """
         Add edge to the graph
         """
+        # graph cannot have a loop
+        if u == v:
+            return
+
         u_edges, v_edges = self.adj_list.get(u), self.adj_list.get(v)
 
         # Edge already exists
