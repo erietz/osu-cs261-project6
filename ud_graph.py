@@ -234,33 +234,29 @@ class UndirectedGraph:
         if len(verticies) < 3:
             return False
 
-        queue = deque()
-
-        vertex_flags = dict()
+        # Since the graph can be disconnected, we have to perform a BFS
+        # starting from each node in the graph to check for cycles.
         for vertex in verticies:
-            vertex_flags[vertex] = -1
+            queue = deque()
 
-        # TODO: this will break if there are three verticies and no edges
-        i = 0
-        vertex = verticies[i]
-        while len(self.adj_list[vertex]) == 0:
-            i += 1
-            vertex = verticies[i]
+            vertex_flags = dict()
+            for i in verticies:
+                vertex_flags[i] = -1
 
-        queue.append(vertex)
+            queue.append(vertex)
 
-        while queue:
-            vertex = queue.popleft()
-            vertex_flags[vertex] = 1
+            while queue:
+                vertex = queue.popleft()
+                vertex_flags[vertex] = 1
 
-            for successor in self.adj_list[vertex]:
-                successor_flag = vertex_flags[successor]
+                for successor in self.adj_list[vertex]:
+                    successor_flag = vertex_flags[successor]
 
-                if successor_flag == 0:
-                    return True
-                if successor_flag == -1:
-                    queue.append(successor)
-                    vertex_flags[successor] = 0
+                    if successor_flag == 0:
+                        return True
+                    if successor_flag == -1:
+                        queue.append(successor)
+                        vertex_flags[successor] = 0
 
         return False
 
