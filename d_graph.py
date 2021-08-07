@@ -121,7 +121,20 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        pass
+        length = len(path)
+
+        if length == 0 or length == 1:
+            return True
+
+        for i in range(length - 1):
+            current_index = path[i]
+            next_index = path[i+1]
+            if self.adj_matrix[current_index][next_index] == 0:
+                return False
+
+        return True
+
+
 
     def dfs(self, v_start, v_end=None) -> []:
         """
