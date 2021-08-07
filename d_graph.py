@@ -1,7 +1,7 @@
 # Course: CS261 - Data Structures
-# Author:
-# Assignment:
-# Description:
+# Author: Ethan Rietz
+# Assignment: 6
+# Description: Contains a class which represents a directed graph
 
 class DirectedGraph:
     """
@@ -54,13 +54,33 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        pass
+        self.v_count += 1
+
+        size_matrix = len(self.adj_matrix)
+
+        if size_matrix == 0:
+            self.adj_matrix.append([0])
+        else:
+            for row in self.adj_matrix:
+                row.append(0)
+            self.adj_matrix.append([0] * (size_matrix + 1))
+
+        return self.v_count - 1
 
     def add_edge(self, src: int, dst: int, weight=1) -> None:
         """
         TODO: Write this implementation
         """
-        pass
+        size_matrix = len(self.adj_matrix)
+
+        if src >= size_matrix or dst >= size_matrix:
+            return
+        if src == dst:
+            return
+        if weight <= 0:
+            return
+
+        self.adj_matrix[src][dst] = weight
 
     def remove_edge(self, src: int, dst: int) -> None:
         """
