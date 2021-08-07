@@ -86,7 +86,14 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        pass
+        size_matrix = len(self.adj_matrix)
+
+        if src >= size_matrix or dst >= size_matrix:
+            return
+        if src == dst:
+            return
+
+        self.adj_matrix[src][dst] = 0
 
     def get_vertices(self) -> []:
         """
