@@ -4,6 +4,7 @@
 # Description: Contains a class which represents a directed graph
 
 from collections import deque
+import heapq
 
 class DirectedGraph:
     """
@@ -58,7 +59,7 @@ class DirectedGraph:
         """
         self.v_count += 1
 
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         if size_matrix == 0:
             self.adj_matrix.append([0])
@@ -73,7 +74,7 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         if src >= size_matrix or dst >= size_matrix:
             return
@@ -88,7 +89,7 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         if src >= size_matrix or dst >= size_matrix:
             return
@@ -108,7 +109,7 @@ class DirectedGraph:
         TODO: Write this implementation
         """
         edges = []
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         for i in range(size_matrix):
             for j in range(size_matrix):
@@ -143,7 +144,7 @@ class DirectedGraph:
         TODO: Write this implementation
         """
         traversal_path = []
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         if v_start < 0 or v_start > size_matrix - 1:
             return traversal_path
@@ -177,7 +178,7 @@ class DirectedGraph:
         TODO: Write this implementation
         """
         traversal_path = []
-        size_matrix = len(self.adj_matrix)
+        size_matrix = self.v_count
 
         if v_start < 0 or v_start > size_matrix - 1:
             return traversal_path
@@ -206,19 +207,37 @@ class DirectedGraph:
         return traversal_path
 
 
-
     def has_cycle(self):
         """
         TODO: Write this implementation
         """
-        pass
-
 
     def dijkstra(self, src: int) -> []:
         """
         TODO: Write this implementation
         """
-        pass
+
+        visited_verticies = dict()
+
+        priority_q = []
+        heapq.heappush(priority_q, (0, src))
+
+        while priority_q:
+            distance, vertex = heapq.heappop(priority_q)
+
+            if visited_verticies.get(vertex) is None:
+                visited_verticies[vertex] = distance
+
+                for i in range(self.v_count):
+                    successor_weight = self.adj_matrix[vertex][i]
+                    if successor_weight != 0:
+                        heapq.heappush(priority_q, (distance + successor_weight, i))
+
+            elif distance < visited_verticies.get(vertex):
+                visited_verticies[vertex] = distance
+
+        shortest_path = [visited_verticies[i] for i in range(self.v_count)]
+        return shortest_path
 
 
 if __name__ == '__main__':
