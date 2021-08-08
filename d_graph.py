@@ -164,7 +164,7 @@ class DirectedGraph:
                 if i == v_end:
                     return traversal_path
 
-                for j in range(size_matrix):
+                for j in range(size_matrix - 1, -1, -1):
                     weight = self.adj_matrix[i][j]
                     if weight != 0 and i != j:
                         stack.append(j)
