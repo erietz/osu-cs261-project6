@@ -226,11 +226,12 @@ class DirectedGraph:
                 successor_weight = self.adj_matrix[vertex][j]
                 if successor_weight != 0:
                     successor_flag = vertex_flags[j]
-                    if successor_flag == 0:
+                    if successor_flag == 0 or successor_flag == 1:
                         return True
                     elif successor_flag == -1:
                         stack.append(j)
                         vertex_flags[j] = 0
+
         return False
 
     def has_cycle(self):
@@ -349,7 +350,11 @@ if __name__ == '__main__':
     edges_to_remove = [(3, 1), (4, 0), (3, 2)]
     for src, dst in edges_to_remove:
         g.remove_edge(src, dst)
-        print(g.get_edges(), g.has_cycle(), sep='\n')
+        print(
+            g.get_edges(),
+            g.has_cycle(),
+            sep='\n'
+            )
 
     edges_to_add = [(4, 3), (2, 3), (1, 3), (4, 0)]
     for src, dst in edges_to_add:
