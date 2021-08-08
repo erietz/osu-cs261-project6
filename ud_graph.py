@@ -230,6 +230,8 @@ class UndirectedGraph:
         """
         Return True if graph contains a cycle, False otherwise
         """
+        # The general approach used to detect a cycle follows this video
+        # https://youtu.be/vXrv3kruvwE
         verticies = list(self.adj_list.keys())
         if len(verticies) < 3:
             return False
@@ -239,9 +241,7 @@ class UndirectedGraph:
         for vertex in verticies:
             queue = deque()
 
-            vertex_flags = dict()
-            for i in verticies:
-                vertex_flags[i] = -1
+            vertex_flags = {i:-1 for i in verticies}
 
             queue.append(vertex)
 

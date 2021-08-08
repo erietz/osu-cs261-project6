@@ -206,12 +206,48 @@ class DirectedGraph:
 
         return traversal_path
 
+    def _component_has_cycle(self, src):
+        """
+        Returns Boolean if component of graph starting at src vertex has a cycle
+        """
+        vertex_flags = {i:-1 for i in range(self.v_count)}
+
+        stack = deque()
+        vertex = src
+        stack.append(vertex)
+
+        while stack:
+            vertex = stack.pop()
+            vertex_flags[vertex] = 1
+
+            for j in range(self.v_count):
+                successor_weight = self.adj_matrix[vertex][j]
+                successor_flag = vertex_flags[j]
+
+                if successor_weight != 0:
+                    if successor_flag == 0:
+                        return True
+                    elif successor_flag == -1:
+                        stack.append(j)
+                        vertex_flags[j] = 0
+        return False
 
     def has_cycle(self):
         """
         TODO: Write this implementation
         """
-        pass
+        # The general approach used to detect a cycle was followed from this
+        # video: https://youtu.be/AK7BuT5MgU0
+
+        if self.v_count < 3:
+            return False
+
+        for i in range(self.v_count):
+            if self._component_has_cycle(i):
+                return True
+
+        return False
+
 
     def dijkstra(self, src: int) -> []:
         """
@@ -291,17 +327,17 @@ if __name__ == '__main__':
 
 
     # # }}}
-    # method dfs() and bfs() example 1 {{{
-    print("\nPDF - method dfs() and bfs() example 1")
-    print("--------------------------------------")
-    edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
-             (3, 1, 5), (2, 1, 23), (3, 2, 7)]
-    g = DirectedGraph(edges)
-    for start in range(5):
-        print(f'{start} DFS:{g.dfs(start)} BFS:{g.bfs(start)}')
+    # # method dfs() and bfs() example 1 {{{
+    # print("\nPDF - method dfs() and bfs() example 1")
+    # print("--------------------------------------")
+    # edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
+    #          (3, 1, 5), (2, 1, 23), (3, 2, 7)]
+    # g = DirectedGraph(edges)
+    # for start in range(5):
+    #     print(f'{start} DFS:{g.dfs(start)} BFS:{g.bfs(start)}')
 
 
-    # }}}
+    # # }}}
     # method has_cycle() example 1 {{{
     print("\nPDF - method has_cycle() example 1")
     print("----------------------------------")
