@@ -3,6 +3,8 @@
 # Assignment: 6
 # Description: Contains a class which represents a directed graph
 
+from collections import deque
+
 class DirectedGraph:
     """
     Class to implement directed weighted graph
@@ -117,6 +119,7 @@ class DirectedGraph:
 
         return edges
 
+
     def is_valid_path(self, path: []) -> bool:
         """
         TODO: Write this implementation
@@ -127,32 +130,89 @@ class DirectedGraph:
             return True
 
         for i in range(length - 1):
-            current_index = path[i]
-            next_index = path[i+1]
-            if self.adj_matrix[current_index][next_index] == 0:
+            src = path[i]
+            dst = path[i+1]
+            if self.adj_matrix[src][dst] == 0:
                 return False
 
         return True
-
 
 
     def dfs(self, v_start, v_end=None) -> []:
         """
         TODO: Write this implementation
         """
-        pass
+        traversal_path = []
+        size_matrix = len(self.adj_matrix)
+
+        if v_start < 0 or v_start > size_matrix - 1:
+            return traversal_path
+
+        visited_verticies = set()
+        stack = deque()
+
+        i = v_start
+        stack.append(i)
+
+        while stack:
+            i = stack.pop()
+
+            if i not in visited_verticies:
+                visited_verticies.add(i)
+                traversal_path.append(i)
+
+                if i == v_end:
+                    return traversal_path
+
+                for j in range(size_matrix):
+                    weight = self.adj_matrix[i][j]
+                    if weight != 0 and i != j:
+                        stack.append(j)
+
+        return traversal_path
+
 
     def bfs(self, v_start, v_end=None) -> []:
         """
         TODO: Write this implementation
         """
-        pass
+        traversal_path = []
+        size_matrix = len(self.adj_matrix)
+
+        if v_start < 0 or v_start > size_matrix - 1:
+            return traversal_path
+
+        visited_verticies = set()
+        queue = deque()
+
+        i = v_start
+        queue.append(i)
+
+        while queue:
+            i = queue.popleft()
+
+            if i not in visited_verticies:
+                visited_verticies.add(i)
+                traversal_path.append(i)
+
+                if i == v_end:
+                    return traversal_path
+
+                for j in range(size_matrix):
+                    weight = self.adj_matrix[i][j]
+                    if weight != 0 and i != j:
+                        queue.append(j)
+
+        return traversal_path
+
+
 
     def has_cycle(self):
         """
         TODO: Write this implementation
         """
         pass
+
 
     def dijkstra(self, src: int) -> []:
         """
@@ -163,41 +223,48 @@ class DirectedGraph:
 
 if __name__ == '__main__':
 
-    print("\nPDF - method add_vertex() / add_edge example 1")
-    print("----------------------------------------------")
-    g = DirectedGraph()
-    print(g)
-    for _ in range(5):
-        g.add_vertex()
-    print(g)
+    # # method add_vertex() / add_edge example 1 {{{
+    # print("\nPDF - method add_vertex() / add_edge example 1")
+    # print("----------------------------------------------")
+    # g = DirectedGraph()
+    # print(g)
+    # for _ in range(5):
+    #     g.add_vertex()
+    # print(g)
 
-    edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
-             (3, 1, 5), (2, 1, 23), (3, 2, 7)]
-    for src, dst, weight in edges:
-        g.add_edge(src, dst, weight)
-    print(g)
-
-
-    print("\nPDF - method get_edges() example 1")
-    print("----------------------------------")
-    g = DirectedGraph()
-    print(g.get_edges(), g.get_vertices(), sep='\n')
-    edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
-             (3, 1, 5), (2, 1, 23), (3, 2, 7)]
-    g = DirectedGraph(edges)
-    print(g.get_edges(), g.get_vertices(), sep='\n')
+    # edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
+    #          (3, 1, 5), (2, 1, 23), (3, 2, 7)]
+    # for src, dst, weight in edges:
+    #     g.add_edge(src, dst, weight)
+    # print(g)
 
 
-    print("\nPDF - method is_valid_path() example 1")
-    print("--------------------------------------")
-    edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
-             (3, 1, 5), (2, 1, 23), (3, 2, 7)]
-    g = DirectedGraph(edges)
-    test_cases = [[0, 1, 4, 3], [1, 3, 2, 1], [0, 4], [4, 0], [], [2]]
-    for path in test_cases:
-        print(path, g.is_valid_path(path))
+    # # }}}
+    # # method get_edges() example 1 {{{
+    # print("\nPDF - method get_edges() example 1")
+    # print("----------------------------------")
+    # g = DirectedGraph()
+    # print(g.get_edges(), g.get_vertices(), sep='\n')
+    # edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
+    #          (3, 1, 5), (2, 1, 23), (3, 2, 7)]
+    # g = DirectedGraph(edges)
+    # print(g.get_edges(), g.get_vertices(), sep='\n')
 
 
+    # # }}}
+    # # method is_valid_path() example 1 {{{
+    # print("\nPDF - method is_valid_path() example 1")
+    # print("--------------------------------------")
+    # edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
+    #          (3, 1, 5), (2, 1, 23), (3, 2, 7)]
+    # g = DirectedGraph(edges)
+    # test_cases = [[0, 1, 4, 3], [1, 3, 2, 1], [0, 4], [4, 0], [], [2]]
+    # for path in test_cases:
+    #     print(path, g.is_valid_path(path))
+
+
+    # # }}}
+    # method dfs() and bfs() example 1 {{{
     print("\nPDF - method dfs() and bfs() example 1")
     print("--------------------------------------")
     edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
@@ -207,6 +274,8 @@ if __name__ == '__main__':
         print(f'{start} DFS:{g.dfs(start)} BFS:{g.bfs(start)}')
 
 
+    # }}}
+    # method has_cycle() example 1 {{{
     print("\nPDF - method has_cycle() example 1")
     print("----------------------------------")
     edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
@@ -236,3 +305,5 @@ if __name__ == '__main__':
     print('\n', g)
     for i in range(5):
         print(f'DIJKSTRA {i} {g.dijkstra(i)}')
+
+    # }}}
