@@ -66,7 +66,7 @@ class DirectedGraph:
         else:
             for row in self.adj_matrix:
                 row.append(0)
-            self.adj_matrix.append([0] * (size_matrix + 1))
+            self.adj_matrix.append([0] * size_matrix)
 
         return self.v_count - 1
 
@@ -211,6 +211,7 @@ class DirectedGraph:
         """
         TODO: Write this implementation
         """
+        pass
 
     def dijkstra(self, src: int) -> []:
         """
@@ -236,7 +237,14 @@ class DirectedGraph:
             elif distance < visited_verticies.get(vertex):
                 visited_verticies[vertex] = distance
 
-        shortest_path = [visited_verticies[i] for i in range(self.v_count)]
+        shortest_path = []
+        for i in range(self.v_count):
+            distance = visited_verticies.get(i)
+            if distance is None:
+                shortest_path.append(float('inf'))
+            else:
+                shortest_path.append(distance)
+
         return shortest_path
 
 
