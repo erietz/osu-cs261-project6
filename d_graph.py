@@ -68,7 +68,7 @@ class DirectedGraph:
                 row.append(0)
             self.adj_matrix.append([0] * size_matrix)
 
-        return self.v_count - 1
+        return self.v_count
 
     def add_edge(self, src: int, dst: int, weight=1) -> None:
         """
@@ -91,7 +91,9 @@ class DirectedGraph:
         """
         size_matrix = self.v_count
 
-        if src >= size_matrix or dst >= size_matrix:
+        if src >= size_matrix or src < 0:
+            return
+        if dst >= size_matrix or dst < 0:
             return
         if src == dst:
             return
@@ -222,9 +224,8 @@ class DirectedGraph:
 
             for j in range(self.v_count):
                 successor_weight = self.adj_matrix[vertex][j]
-                successor_flag = vertex_flags[j]
-
                 if successor_weight != 0:
+                    successor_flag = vertex_flags[j]
                     if successor_flag == 0:
                         return True
                     elif successor_flag == -1:
