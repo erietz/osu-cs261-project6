@@ -212,12 +212,12 @@ class DirectedGraph:
         """
         Returns Boolean if component of graph starting at src vertex has a cycle
         """
-        # vertex_flags = {i:-1 for i in range(self.v_count)}
+        vertex_flags = {i:-1 for i in range(self.v_count)}
 
         stack = deque()
         for vertex in reversed(self.dfs(src)):
             stack.append(vertex)
-            # vertex_flags[vertex] = 0
+            vertex_flags[vertex] = 0
 
         get_successors = lambda vertex: [ i for i in range(self.v_count) if self.adj_matrix[vertex][i] != 0 ]
 
@@ -225,14 +225,14 @@ class DirectedGraph:
 
         while stack:
             vertex = stack.pop()
+            visited_verticies.add(vertex)
 
-            if vertex not in visited_verticies:
-                visited_verticies.add(vertex)
+            # if vertex not in visited_verticies:
+            #     visited_verticies.add(vertex)
 
             successors = get_successors(vertex)
             if len(successors) == 0:
-                # visited_verticies.remove(vertex)
-                return False
+                visited_verticies.remove(vertex)
 
             for successor in successors:
                 if successor in visited_verticies:
