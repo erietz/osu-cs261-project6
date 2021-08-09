@@ -231,7 +231,8 @@ class DirectedGraph:
 
             successors = get_successors(vertex)
             if len(successors) == 0:
-                visited_verticies.remove(vertex)
+                # visited_verticies.remove(vertex)
+                return False
 
             for successor in successors:
                 if successor in visited_verticies:
