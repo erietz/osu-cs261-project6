@@ -215,28 +215,32 @@ class DirectedGraph:
         vertex_flags = {i:-1 for i in range(self.v_count)}
 
         stack = deque()
-        for vertex in reversed(self.dfs(src)):
-            stack.append(vertex)
-            vertex_flags[vertex] = 0
-
-        get_successors = lambda vertex: [ i for i in range(self.v_count) if self.adj_matrix[vertex][i] != 0 ]
+        stack.append(src)
+        vertex_flags[src] = 0
 
         visited_verticies = set()
 
+        get_successors = lambda vertex: [ i for i in range(self.v_count) if self.adj_matrix[vertex][i] != 0 ]
+
         while stack:
             vertex = stack.pop()
-            visited_verticies.add(vertex)
+            vertex_flags[vertex] = 1
 
-            # if vertex not in visited_verticies:
-            #     visited_verticies.add(vertex)
+            visited_verticies.add(vertex)
 
             successors = get_successors(vertex)
             if len(successors) == 0:
                 visited_verticies.remove(vertex)
 
             for successor in successors:
-                if successor in visited_verticies:
-                    return True
+                successor_flag = vertex_flags[successor]
+                if successor_flag == 0 or successor_flag == 1:
+                    if successor in visited_verticies:
+                        return True
+                elif successor_flag == -1:
+                    stack.append(successor)
+                    vertex_flags[successor] = 0
+
 
         return False
 
