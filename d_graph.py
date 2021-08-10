@@ -208,59 +208,41 @@ class DirectedGraph:
 
         return traversal_path
 
-    def _component_has_cycle(self, src):
+    def _component_has_cycle(self, i, visited, stack):
         """
         Returns Boolean if component of graph starting at src vertex has a cycle
         """
-        vertex_flags = {i:-1 for i in range(self.v_count)}
+        visited[i] = True
+        stack[i] = True
 
-        stack = deque()
-        stack.append(src)
-        vertex_flags[src] = 0
+        neighbors = [j for j in range(self.v_count) if self.adj_matrix[i][j] != 0]
 
-        visited_verticies = set()
+        for neighbor in neighbors:
+            if not visited[neighbor]:
+                if self._component_has_cycle(neighbor, visited, stack):
+                    return True
+            elif stack[neighbor]:
+                return True
 
-        get_successors = lambda vertex: [ i for i in range(self.v_count) if self.adj_matrix[vertex][i] != 0 ]
-
-        while stack:
-            vertex = stack.pop()
-            vertex_flags[vertex] = 1
-
-            visited_verticies.add(vertex)
-
-            successors = get_successors(vertex)
-            if len(successors) == 0:
-                visited_verticies.remove(vertex)
-                vertex_flags[vertex] = -1
-
-            for successor in successors:
-                successor_flag = vertex_flags[successor]
-                if successor_flag == 0 or successor_flag == 1:
-                    if successor in visited_verticies:
-                        return True
-                elif successor_flag == -1:
-                    stack.append(successor)
-                    vertex_flags[successor] = 0
-
-
+        stack[i] = False
         return False
-
-
 
     def has_cycle(self):
         """
         TODO: Write this implementation
         """
-        # The general approach used to detect a cycle was followed from this
-        # video: https://youtu.be/AK7BuT5MgU0
+        # The idea of this implementation comes from this video
+        # https://www.youtube.com/watch?v=0dJmTuMrUZM
 
         if self.v_count < 3:
             return False
 
+        visited = [False] * self.v_count
+        stack = [False] * self.v_count
         for i in range(self.v_count):
-            if self._component_has_cycle(i):
-                return True
-
+            if visited[i] == False:
+                if self._component_has_cycle(i, visited, stack):
+                    return True
         return False
 
 
@@ -342,17 +324,17 @@ if __name__ == '__main__':
 
 
     # # }}}
-    # method dfs() and bfs() example 1 {{{
-    print("\nPDF - method dfs() and bfs() example 1")
-    print("--------------------------------------")
-    edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
-             (3, 1, 5), (2, 1, 23), (3, 2, 7)]
-    g = DirectedGraph(edges)
-    for start in range(5):
-        print(f'{start} DFS:{g.dfs(start)} BFS:{g.bfs(start)}')
+    # # method dfs() and bfs() example 1 {{{
+    # print("\nPDF - method dfs() and bfs() example 1")
+    # print("--------------------------------------")
+    # edges = [(0, 1, 10), (4, 0, 12), (1, 4, 15), (4, 3, 3),
+    #          (3, 1, 5), (2, 1, 23), (3, 2, 7)]
+    # g = DirectedGraph(edges)
+    # for start in range(5):
+    #     print(f'{start} DFS:{g.dfs(start)} BFS:{g.bfs(start)}')
 
 
-    # }}}
+    # # }}}
     # method has_cycle() example 1 {{{
     print("\nPDF - method has_cycle() example 1")
     print("----------------------------------")
