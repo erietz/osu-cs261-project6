@@ -55,7 +55,9 @@ class DirectedGraph:
 
     def add_vertex(self) -> int:
         """
-        TODO: Write this implementation
+        Adds a vertex to the directed graph and returns the number of vertices
+        in the graph after the addition. A vertex without an edge has a weight
+        of zero.
         """
         self.v_count += 1
 
@@ -72,11 +74,14 @@ class DirectedGraph:
 
     def add_edge(self, src: int, dst: int, weight=1) -> None:
         """
-        TODO: Write this implementation
+        Adds an edge of weight <weight> to the directed graph that points from
+        <src> to <dst>.
         """
         size_matrix = self.v_count
 
-        if src >= size_matrix or dst >= size_matrix:
+        if src >= size_matrix or src < 0:
+            return
+        if dst >= size_matrix or dst < 0:
             return
         if src == dst:
             return
@@ -87,7 +92,7 @@ class DirectedGraph:
 
     def remove_edge(self, src: int, dst: int) -> None:
         """
-        TODO: Write this implementation
+        Removes the edge between <src> and <dst> vertices.
         """
         size_matrix = self.v_count
 
@@ -102,30 +107,29 @@ class DirectedGraph:
 
     def get_vertices(self) -> []:
         """
-        TODO: Write this implementation
+        Returns a list of all the vertices
         """
-        return list(range(len(self.adj_matrix)))
+        return list(range(self.v_count))
 
     def get_edges(self) -> []:
         """
-        TODO: Write this implementation
+        Returns a list of tuples representing all of the edges. The tuple is of
+        the form (src, dst, weight).
         """
         edges = []
         size_matrix = self.v_count
 
         for i in range(size_matrix):
             for j in range(size_matrix):
-                if i != j:
-                    weight = self.adj_matrix[i][j]
-                    if weight != 0:
-                        edges.append((i, j, weight))
-
+                weight = self.adj_matrix[i][j]
+                if weight != 0:
+                    edges.append((i, j, weight))
         return edges
 
 
     def is_valid_path(self, path: []) -> bool:
         """
-        TODO: Write this implementation
+        Returns Boolean if the graph can be traversed following <path>
         """
         length = len(path)
 
@@ -143,7 +147,12 @@ class DirectedGraph:
 
     def dfs(self, v_start, v_end=None) -> []:
         """
-        TODO: Write this implementation
+        Performs a depth first search starting from vertex <v_start> and ending
+        at vertex <v_end> (or the entire graph if not included) and returns a
+        list of the vertices visited during the traversal. If a node has
+        multiple adjacent nodes, the DFS is performed by taking the nodes in
+        ascending order (e.g. if current node = 4, next nodes traversed would 
+        be 1, 2, 5 instead of 5, 2, 1).
         """
         traversal_path = []
         size_matrix = self.v_count
@@ -167,6 +176,8 @@ class DirectedGraph:
                 if i == v_end:
                     return traversal_path
 
+                # Put adjacent nodes on stack in reverse order so they are
+                # popped off in correct order
                 for j in range(size_matrix - 1, -1, -1):
                     weight = self.adj_matrix[i][j]
                     if weight != 0 and i != j:
@@ -177,7 +188,12 @@ class DirectedGraph:
 
     def bfs(self, v_start, v_end=None) -> []:
         """
-        TODO: Write this implementation
+        Performs a breadth first search starting from vertex <v_start> and ending
+        at vertex <v_end> (or the entire graph if not included) and returns a
+        list of the vertices visited during the traversal. If a node has
+        multiple adjacent nodes, the BFS is performed by taking the nodes in
+        ascending order (e.g. if current node = 4, next nodes traversed would 
+        be 1, 2, 5 instead of 5, 2, 1).
         """
         traversal_path = []
         size_matrix = self.v_count
@@ -210,26 +226,35 @@ class DirectedGraph:
 
     def _component_has_cycle(self, i, visited, stack):
         """
-        Returns Boolean if component of graph starting at src vertex has a cycle
+        Returns Boolean if component of graph starting at vertex <i> has a
+        cycle
         """
         visited[i] = True
         stack[i] = True
 
+        # All adjacent vertices to vertex i
         neighbors = [j for j in range(self.v_count) if self.adj_matrix[i][j] != 0]
 
+        # Do a DFS starting from current node. Recursive calls end when node
+        # has no neighbors or cycle has been found.
         for neighbor in neighbors:
+            # Continue to traverse the graph (in recursive calls) making the
+            # current vertex, i one of its neighbors.
             if not visited[neighbor]:
                 if self._component_has_cycle(neighbor, visited, stack):
                     return True
+            # Neighbor has been visited and is on the stack. This indicates a
+            # cycle
             elif stack[neighbor]:
                 return True
 
+        # remove node from the stack when backtracking from DFS traversal
         stack[i] = False
         return False
 
     def has_cycle(self):
         """
-        TODO: Write this implementation
+        Returns Boolean if the graph has a cycle
         """
         # The idea of this implementation comes from this video
         # https://www.youtube.com/watch?v=0dJmTuMrUZM
@@ -237,9 +262,13 @@ class DirectedGraph:
         if self.v_count < 3:
             return False
 
-        visited = [False] * self.v_count
-        stack = [False] * self.v_count
+        visited = [False] * self.v_count    # array of nodes visited during DFS
+        stack = [False] * self.v_count      # array of nodes being processed
+        # Do a DFS starting from each node in the graph since the graph can be
+        # disconnected.
         for i in range(self.v_count):
+            # Visited array is modified in recursive call for nodes which are
+            # visited.
             if visited[i] == False:
                 if self._component_has_cycle(i, visited, stack):
                     return True
@@ -248,14 +277,23 @@ class DirectedGraph:
 
     def dijkstra(self, src: int) -> []:
         """
-        TODO: Write this implementation
+        Returns a list with one value per each vertex in the graph, where the
+        value at index 0 is the length of the shortest path from vertex SRC to
+        vertex 0, the value at index 1 is the length of the shortest path from
+        vertex SRC to vertex 1 etc.
         """
 
+        # key = vertex index
+        # value = minimum cumulative distance from src to vertex
         visited_verticies = dict()
 
+        # heap data structure held in a python list. Elements in the list are
+        # tuples: (weight, vertex). The weight in this case is the priority
         priority_q = []
+        # src vertex has priority 0
         heapq.heappush(priority_q, (0, src))
 
+        # Classic dijkstra algorithm
         while priority_q:
             distance, vertex = heapq.heappop(priority_q)
 
@@ -270,6 +308,8 @@ class DirectedGraph:
             elif distance < visited_verticies.get(vertex):
                 visited_verticies[vertex] = distance
 
+        # Build the list of distance to return. None values in the dictionary
+        # must be replaced by infinity since there is not path to them.
         shortest_path = []
         for i in range(self.v_count):
             distance = visited_verticies.get(i)

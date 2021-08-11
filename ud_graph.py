@@ -45,6 +45,7 @@ class UndirectedGraph:
         """
         Add new vertex to the graph
         """
+        # Cannot add a vertex if it already exists in graph
         if v in self.adj_list:
             return
         else:
@@ -62,6 +63,7 @@ class UndirectedGraph:
         u_edges, v_edges = self.adj_list.get(u), self.adj_list.get(v)
 
         # Edge already exists
+        # NOTE: vertex u has edge with v iff vertex v has edge with u
         if u_edges is not None and v_edges is not None and u in v_edges:
             return
 
@@ -69,6 +71,7 @@ class UndirectedGraph:
         if u_edges is None:
             self.add_vertex(u)
 
+        # v does not already exist
         if v_edges is None:
             self.add_vertex(v)
 
@@ -82,9 +85,11 @@ class UndirectedGraph:
         """
         u_edges, v_edges = self.adj_list.get(u), self.adj_list.get(v)
 
+        # Cannot remove edge that doesn't exist
         if u_edges is None or v_edges is None:
             return
 
+        # v should also not be in u_edges
         if u not in v_edges:
             return
 
@@ -98,13 +103,16 @@ class UndirectedGraph:
         """
         edges = self.adj_list.get(v)
 
+        # Cannot remove vertex if it does not exist
         if edges is None:
             return
         else:
+            # Remove v from each adjacent list
             for vertex in edges:
                 edge = self.adj_list.get(vertex)
                 edge.remove(v)
 
+            # Remove v key value pair itself
             del self.adj_list[v]
 
 
@@ -121,6 +129,8 @@ class UndirectedGraph:
         """
         all_edges = set()   # is item in set is O(1) (on average) operation
 
+        # Number of elements processed will be vertex (V) + edges (E)
+        # Time complexity is O(V + E)
         for u, edge_list in self.adj_list.items():
             for v in edge_list:
                 if (v, u) not in all_edges:
@@ -135,9 +145,11 @@ class UndirectedGraph:
         """
         length_path = len(path)
 
+        # Edge case where loop below will not run since only one item
         if length_path == 1 and path[0] not in self.adj_list.keys():
             return False
 
+        # Check that path[i+1] is in path[i]'s list of edges
         for i in range(length_path - 1):
             vertex = path[i]
             edges = self.adj_list[vertex]
@@ -172,6 +184,8 @@ class UndirectedGraph:
                 if vertex == v_end:
                     return traversal_path
 
+                # Process the adjacent vertices in ascending order
+                # NOTE: reversed is used because stack is FILO
                 for successor in sorted(self.adj_list[vertex], reverse=True):
                     stack.append(successor)
 
@@ -203,6 +217,8 @@ class UndirectedGraph:
                 if vertex == v_end:
                     return traversal_path
 
+                # Process the adjacent vertices in ascending order
+                # NOTE: The sort is not reversed since a queue is FIFO
                 for successor in sorted(self.adj_list[vertex]):
                     queue.append(successor)
 
@@ -216,12 +232,15 @@ class UndirectedGraph:
         connected_components = 0
         visited_verticies = set()
 
+        # Do a DFS starting from each vertex in the graph
         for vertex in self.adj_list.keys():
+            # A new component is found if the last DFS did not find the current
+            # vertex
             if vertex not in visited_verticies:
-                connected_components += 1
                 verticies_in_compenent = self.dfs(vertex)
                 for other_vertex in verticies_in_compenent:
                     visited_verticies.add(other_vertex)
+                connected_components += 1
 
         return connected_components
 
@@ -232,6 +251,8 @@ class UndirectedGraph:
         """
         # The general approach used to detect a cycle follows this video
         # https://youtu.be/vXrv3kruvwE
+
+        # Cannot have a cycle with less than three verticies
         verticies = list(self.adj_list.keys())
         if len(verticies) < 3:
             return False
@@ -241,6 +262,9 @@ class UndirectedGraph:
         for vertex in verticies:
             queue = deque()
 
+            # Flag = -1: vertex not yet visited
+            # Flag = 0: vertex is currently in queue
+            # Flag = 1: vertex has been dequeued
             vertex_flags = {i:-1 for i in verticies}
 
             queue.append(vertex)
@@ -252,6 +276,9 @@ class UndirectedGraph:
                 for successor in self.adj_list[vertex]:
                     successor_flag = vertex_flags[successor]
 
+                    # Successor has been found that is also in the queue (i.e.
+                    # the vertex is connected to the parent of the vertex
+                    # through its successor's)
                     if successor_flag == 0:
                         return True
                     if successor_flag == -1:
